@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  danger-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: danger-portal
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # PocketID OIDC Configuration
+      - POCKETID_ISSUER=${POCKETID_ISSUER:-https://id.danger.direct}
+      - CLIENT_ID=${CLIENT_ID:-danger-portal}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - REDIRECT_URI=${REDIRECT_URI:-https://danger.direct/api/auth/callback}
+      
+      # Session Configuration
+      - SESSION_SECRET=${SESSION_SECRET}
+      
+      # Node Configuration
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=3000
+    volumes:
+      # Mount the CDN directory for static assets
+      - ${CDN_PATH:-./cdn}:/app/dist/client/cdn:ro
+    networks:
+      - danger-network
+    labels:
+      # Traefik labels for reverse proxy (if using Traefik)
+      - "traefik.enable=true"
+      - "traefik.http.routers.danger-portal.rule=Host(`danger.direct`)"
+      - "traefik.http.routers.danger-portal.entrypoints=websecure"
+      - "traefik.http.routers.danger-portal.tls.certresolver=letsencrypt"
+      - "traefik.http.services.danger-portal.loadbalancer.server.port=3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+networks:
+  danger-network:
+    external: true
+    # If the network doesn't exist, create it with:
+    # docker network create danger-network
+

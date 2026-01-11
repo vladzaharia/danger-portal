@@ -1,0 +1,312 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = false;
+
+// Get session from middleware
+const session = Astro.locals.session;
+
+// Define available services
+const services = [
+  {
+    name: 'Jellyfin',
+    description: 'Movies, TV shows and Karaoke',
+    icon: '/icons/jellyfin.svg',
+    url: 'https://media.danger.direct',
+    color: '#00a4dc'
+  },
+  {
+    name: 'Komga',
+    description: 'Comic and manga server',
+    icon: '/icons/komga.svg',
+    url: 'https://books.danger.direct',
+    color: '#4caf50'
+  },
+  {
+    name: 'Romm',
+    description: 'ROM management and game library',
+    icon: '/icons/romm.svg',
+    url: 'https://games.danger.direct',
+    color: '#9c27b0'
+  },
+  {
+    name: 'Immich',
+    description: 'Self-hosted photo and video backup',
+    icon: '/icons/immich.svg',
+    url: 'https://photos.danger.direct',
+    color: '#4250af'
+  },
+  {
+    name: 'Kiwix',
+    description: 'Offline Wikipedia and educational content',
+    icon: '/icons/kiwix.svg',
+    url: 'https://kiwix.danger.direct',
+    color: '#ff9800'
+  }
+];
+---
+
+<BaseLayout title="Services - Danger.Direct">
+  <div class="animated-bg"></div>
+  
+  <header class="header glass">
+    <div class="header-content">
+      <div class="logo-wordmark-small">
+        <span class="wordmark-small-line-1">Danger.</span><span class="wordmark-small-line-2">Direct</span>
+      </div>
+      <div class="user-info">
+        <a href="/api/auth/logout" class="logout-button">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16" fill="currentColor">
+            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
+          </svg>
+          Logout
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="services-section">
+      <div class="services-grid">
+        {services.map(service => (
+          <a href={service.url} class="service-card glass" target="_blank" rel="noopener noreferrer">
+            <div class="service-icon" style={`background: ${service.color}20;`}>
+              <img src={service.icon} alt={service.name} />
+            </div>
+            <h3 class="service-name">{service.name}</h3>
+            <p class="service-description">{service.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="cdn-section">
+      <a class="service-card cdn-info glass" href="/cdn/" target="_blank" rel="noopener noreferrer">
+        <div class="cdn-header">
+          <h3>Static Files</h3>
+        </div>
+        <p>Access static files and media at <code>/cdn/</code></p>
+      </a>
+    </section>
+  </main>
+
+  <style>
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      margin: 1rem;
+      padding: 1rem 1.5rem;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-wordmark-small {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+    }
+
+    .wordmark-small-line-1 {
+      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .wordmark-small-line-2 {
+      background: linear-gradient(135deg, #e91e63, #f06292);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-name {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .logout-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-text);
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.375rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .logout-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .logout-button svg {
+      flex-shrink: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .services-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .section-description {
+      text-align: center;
+      color: var(--color-text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      padding-bottom: 1rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.2);
+    }
+
+    .service-icon {
+      width: 4rem;
+      height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+    }
+
+    .service-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .service-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-description {
+      color: var(--color-text-muted);
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+
+    .service-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #3b82f6;
+      font-weight: 500;
+    }
+
+    .service-link svg {
+      flex-shrink: 0;
+    }
+
+    .cdn-section {
+      margin-top: 3rem;
+    }
+
+    .cdn-info {
+      display: block;
+      padding: 2rem;
+      padding-bottom: 1rem;
+      text-align: center;
+    }
+
+    .cdn-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .cdn-header h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .cdn-info p {
+      color: var(--color-text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .cdn-info code {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .user-info {
+        flex-direction: column;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    // Store session in localStorage for client-side access
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('authenticated', 'true');
+    }
+  </script>
+</BaseLayout>
+

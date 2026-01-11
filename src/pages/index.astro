@@ -1,0 +1,378 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+// Check if there's an error parameter
+const error = Astro.url.searchParams.get('error');
+---
+
+<BaseLayout title="Danger.Direct">
+  <div class="animated-bg"></div>
+
+  <main class="container">
+    <div class="content glass">
+      <div class="logo-wordmark">
+        <div class="wordmark-line-1">Danger.</div>
+        <div class="wordmark-line-2">Direct</div>
+      </div>
+
+      {error && (
+        <div class="error-alert">
+          <span class="error-icon">⚠️</span>
+          <span>
+            {error === 'missing_pkce' && 'Authentication session expired. Please try again.'}
+            {error === 'auth_failed' && 'Authentication failed. Please try again.'}
+            {!['missing_pkce', 'auth_failed'].includes(error) && 'An error occurred. Please try again.'}
+          </span>
+        </div>
+      )}
+
+      <div class="info-section">
+        <p>Danger.Direct is a portable media server. We use PocketID as a way to create an account and authenticate. Follow the steps below and you'll be able to access our media, books, and games anytime!</p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Create Account</h3>
+              <p>Click the button below to start the authentication process</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Set Up Passkey</h3>
+              <p>Follow the prompts to create your secure passkey</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Access Services</h3>
+              <p>Once authenticated, you'll have access to all available services</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cta-container">
+          <div class="button-wrapper">
+            <a href="/api/auth/login" class="create-account-button">
+              <img src="/icons/pocket-id.svg" alt="PocketID" class="button-icon-img">
+              <span class="button-text">Create your Account</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .content {
+      max-width: 900px;
+      width: 100%;
+      padding: 3rem;
+	  padding-bottom: 0;
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Fancy Logo Wordmark */
+    .logo-wordmark {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .wordmark-line-1,
+    .wordmark-line-2 {
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      position: relative;
+      display: block;
+    }
+
+    .wordmark-line-1 {
+      font-size: 5rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+      animation: glow 3s ease-in-out infinite;
+      margin-bottom: -1.5rem;
+    }
+
+    .wordmark-line-2 {
+      font-size: 5rem;
+      background: linear-gradient(135deg, #e91e63 0%, #f06292 50%, #f8bbd0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-left: 5rem;
+      text-shadow: 0 0 40px rgba(233, 30, 99, 0.3);
+      animation: glow 3s ease-in-out infinite 0.5s;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        filter: brightness(1) drop-shadow(0 0 20px rgba(59, 130, 246, 0.4));
+      }
+      50% {
+        filter: brightness(1.2) drop-shadow(0 0 30px rgba(233, 30, 99, 0.6));
+      }
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .description {
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .error-alert {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 0.5rem;
+      color: #fca5a5;
+    }
+
+    .error-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .cta-container {
+      margin: 2.5rem 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .button-wrapper {
+      position: relative;
+      display: inline-block;
+      padding: 2px;
+      border-radius: 0.5rem;
+      background: linear-gradient(90deg, #3b82f6, #e91e63, #3b82f6);
+      background-size: 200% 100%;
+    }
+
+    .button-wrapper:hover {
+      animation: gradientSlide 2s linear infinite;
+    }
+
+    @keyframes gradientSlide {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    .create-account-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.5rem 1rem 1rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      background: #000000;
+      color: #ffffff !important;
+      border-radius: 0.375rem;
+      border-bottom: 0 !important;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .create-account-button .button-text {
+      background: linear-gradient(90deg, #3b82f6, #e91e63, #3b82f6);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .button-wrapper:hover .button-text {
+      animation: gradientSlide 2s linear infinite;
+    }
+
+    .create-account-button:active {
+      transform: scale(0.98);
+    }
+
+    .button-icon-img {
+      width: 2rem;
+      height: 2rem;
+      display: inline-block;
+      transition: filter 0.3s ease;
+    }
+
+    .create-account-button:hover .button-icon-img {
+      filter: brightness(1) invert(0);
+    }
+
+    .info-section {
+      margin-top: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    .info-section h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .info-section p {
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .info-section a {
+      color: #3b82f6;
+      text-decoration: none;
+      border-bottom: 1px solid #3b82f6;
+      transition: all 0.2s;
+    }
+
+    .info-section a:hover {
+      color: #60a5fa;
+      border-bottom-color: #60a5fa;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .step:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .step-number {
+      flex-shrink: 0;
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #3b82f6, #e91e63);
+      color: white;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .step-content h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-content p {
+      color: var(--color-text-muted);
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 2rem 1.5rem;
+      }
+
+      .wordmark-line-1,
+      .wordmark-line-2 {
+        font-size: 3rem;
+      }
+
+      .wordmark-line-1 {
+        margin-bottom: -0.75rem;
+      }
+
+      .wordmark-line-2 {
+        margin-left: 3rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .step {
+        padding: 1.25rem;
+      }
+
+      .create-account-button {
+        font-size: 1.125rem;
+        padding: 1rem 2rem;
+      }
+    }
+  </style>
+
+  <script>
+    // Check if user is already authenticated
+    if (typeof document !== 'undefined') {
+      const authenticated = document.cookie.split('; ').find(row => row.startsWith('authenticated='));
+      if (authenticated && authenticated.split('=')[1] === 'true') {
+        window.location.href = '/services';
+      }
+    }
+  </script>
+</BaseLayout>

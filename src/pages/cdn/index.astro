@@ -1,0 +1,204 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = false;
+---
+
+<BaseLayout title="CDN - Danger.Direct">
+  <div class="animated-bg-dark"></div>
+
+  <main class="container">
+    <div class="content glass">
+      <div class="logo-wordmark">
+        <div class="wordmark-line-1">Danger.</div>
+        <div class="wordmark-line-2">Direct</div>
+      </div>
+
+      <div class="info-section">
+        <p>These aren't the files you're looking for.</p>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    /* Much darker animated gradient background */
+    .animated-bg-dark {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(
+        135deg,
+        #000000 0%,
+        #050505 25%,
+        #0a0a0a 50%,
+        #030303 75%,
+        #000000 100%
+      );
+      background-size: 400% 400%;
+      animation: gradientShift 20s ease infinite;
+    }
+
+    .animated-bg-dark::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at 20% 50%,
+        rgba(59, 130, 246, 0.05) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        rgba(99, 102, 241, 0.05) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 20%,
+        rgba(139, 92, 246, 0.05) 0%,
+        transparent 50%
+      );
+      animation: blobMove 25s ease-in-out infinite;
+    }
+
+    .animated-bg-dark::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(100px);
+      -webkit-backdrop-filter: blur(100px);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    @keyframes blobMove {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(30px, -50px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+    }
+
+    .container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .content {
+      max-width: 900px;
+      width: 100%;
+      padding: 3rem;
+      padding-bottom: 0;
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Fancy Logo Wordmark */
+    .logo-wordmark {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .wordmark-line-1,
+    .wordmark-line-2 {
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      position: relative;
+      display: block;
+    }
+
+    .wordmark-line-1 {
+      font-size: 5rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+      animation: glow 3s ease-in-out infinite;
+      margin-bottom: -1.5rem;
+    }
+
+    .wordmark-line-2 {
+      font-size: 5rem;
+      background: linear-gradient(135deg, #e91e63 0%, #f06292 50%, #f8bbd0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-left: 5rem;
+      text-shadow: 0 0 40px rgba(233, 30, 99, 0.3);
+      animation: glow 3s ease-in-out infinite 0.5s;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        filter: brightness(1) drop-shadow(0 0 20px rgba(59, 130, 246, 0.4));
+      }
+      50% {
+        filter: brightness(1.2) drop-shadow(0 0 30px rgba(233, 30, 99, 0.6));
+      }
+    }
+
+    .info-section {
+      margin-top: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    .info-section p {
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 2rem 1.5rem;
+      }
+
+      .wordmark-line-1,
+      .wordmark-line-2 {
+        font-size: 3rem;
+      }
+
+      .wordmark-line-2 {
+        margin-left: 1.5rem;
+      }
+    }
+  </style>
+</BaseLayout>
