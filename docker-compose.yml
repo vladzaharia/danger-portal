@@ -26,8 +26,6 @@ services:
     volumes:
       # Mount the CDN directory for static assets
       - ${CDN_PATH:-./cdn}:/app/dist/client/cdn:ro
-    networks:
-      - danger-network
     labels:
       # Traefik labels for reverse proxy (if using Traefik)
       - "traefik.enable=true"
@@ -41,10 +39,3 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
-
-networks:
-  danger-network:
-    external: true
-    # If the network doesn't exist, create it with:
-    # docker network create danger-network
-
