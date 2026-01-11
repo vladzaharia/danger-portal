@@ -33,9 +33,3 @@ services:
       - "traefik.http.routers.danger-portal.entrypoints=websecure"
       - "traefik.http.routers.danger-portal.tls.certresolver=letsencrypt"
       - "traefik.http.services.danger-portal.loadbalancer.server.port=3000"
-    healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 10s
