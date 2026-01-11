@@ -5,10 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: danger-portal
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     environment:
       # PocketID OIDC Configuration
       - POCKETID_ISSUER=${POCKETID_ISSUER:-https://id.danger.direct}
@@ -26,10 +23,3 @@ services:
     volumes:
       # Mount the CDN directory for static assets
       - ${CDN_PATH:-./cdn}:/app/dist/client/cdn:ro
-    labels:
-      # Traefik labels for reverse proxy (if using Traefik)
-      - "traefik.enable=true"
-      - "traefik.http.routers.danger-portal.rule=Host(`danger.direct`)"
-      - "traefik.http.routers.danger-portal.entrypoints=websecure"
-      - "traefik.http.routers.danger-portal.tls.certresolver=letsencrypt"
-      - "traefik.http.services.danger-portal.loadbalancer.server.port=3000"
