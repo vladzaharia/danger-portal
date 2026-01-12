@@ -12,10 +12,10 @@ services:
       - CLIENT_ID=${CLIENT_ID:-danger-portal}
       - CLIENT_SECRET=${CLIENT_SECRET}
       - REDIRECT_URI=${REDIRECT_URI:-https://danger.direct/api/auth/callback}
-      
+
       # Session Configuration
       - SESSION_SECRET=${SESSION_SECRET}
-      
+
       # Node Configuration
       - NODE_ENV=production
       - HOST=0.0.0.0
@@ -23,3 +23,9 @@ services:
     volumes:
       # Mount the CDN directory for static assets
       - ${CDN_PATH:-./cdn}:/app/dist/client/cdn:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
