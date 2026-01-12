@@ -25,8 +25,9 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
-# Create cdn directory for volume mount
-RUN mkdir -p /app/dist/client/cdn
+# Create cdn directory for volume mount and install curl
+RUN mkdir -p /app/dist/client/cdn && \
+    apk add --no-cache curl=8.14.1-r2
 
 # Expose port
 EXPOSE 3000
