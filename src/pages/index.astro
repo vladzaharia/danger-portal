@@ -367,10 +367,47 @@ const error = Astro.url.searchParams.get('error');
   </style>
 
   <script>
-    // Check if user is already authenticated
+    // Check if user is already authenticated via any storage mechanism
     if (typeof document !== 'undefined') {
-      const authenticated = document.cookie.split('; ').find(row => row.startsWith('authenticated='));
-      if (authenticated && authenticated.split('=')[1] === 'true') {
+      let sessionData = null;
+
+      // Try cookie first
+      try {
+        const sessionCookie = document.cookie.split('; ').find(row => row.startsWith('danger_portal_session='));
+        if (sessionCookie) {
+          const sessionValue = decodeURIComponent(sessionCookie.split('=')[1]);
+          sessionData = JSON.parse(sessionValue);
+        }
+      } catch (error) {
+        console.debug('Failed to read session from cookie:', error);
+      }
+
+      // Try localStorage if cookie failed
+      if (!sessionData) {
+        try {
+          const sessionJson = localStorage.getItem('danger_portal_session');
+          if (sessionJson) {
+            sessionData = JSON.parse(sessionJson);
+          }
+        } catch (error) {
+          console.debug('Failed to read session from localStorage:', error);
+        }
+      }
+
+      // Try sessionStorage if both failed
+      if (!sessionData) {
+        try {
+          const sessionJson = sessionStorage.getItem('danger_portal_session');
+          if (sessionJson) {
+            sessionData = JSON.parse(sessionJson);
+          }
+        } catch (error) {
+          console.debug('Failed to read session from sessionStorage:', error);
+        }
+      }
+
+      // If we found a valid session, redirect to services
+      if (sessionData && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
         window.location.href = '/services';
       }
     }

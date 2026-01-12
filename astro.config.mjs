@@ -16,5 +16,14 @@ export default defineConfig({
     ssr: {
       noExternal: ['@awesome.me/webawesome']
     }
+  },
+  experimental: {
+    csp: {
+      algorithm: 'SHA-256',
+      directives: [
+        // Allow iframe embedding from any danger.direct subdomain
+        'frame-ancestors https://*.danger.direct https://danger.direct'
+      ]
+    }
   }
 });

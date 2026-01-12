@@ -43,6 +43,25 @@ export const GET: APIRoute = async () => {
         });
 
         if (response.ok) {
+          const data = await response.json();
+
+          // Save session data to localStorage and sessionStorage for redundancy
+          if (data.sessionData) {
+            const sessionJson = JSON.stringify(data.sessionData);
+
+            try {
+              localStorage.setItem('danger_portal_session', sessionJson);
+            } catch (e) {
+              console.warn('Failed to save to localStorage:', e);
+            }
+
+            try {
+              sessionStorage.setItem('danger_portal_session', sessionJson);
+            } catch (e) {
+              console.warn('Failed to save to sessionStorage:', e);
+            }
+          }
+
           window.location.href = '/services';
         } else {
           window.location.href = '/?error=auth_failed';

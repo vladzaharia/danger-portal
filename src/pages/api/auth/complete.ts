@@ -40,7 +40,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       maxAge: 60 * 60 * 24 * 7 // 7 days
     });
 
-    // Also set a client-accessible cookie for client-side checks
+    // Also set a client-accessible cookie for client-side checks and localStorage/sessionStorage
+    // This allows the session to work even when HTTP-only cookies fail (e.g., localhost)
     cookies.set('authenticated', 'true', {
       path: '/',
       httpOnly: false,
@@ -49,7 +50,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       maxAge: 60 * 60 * 24 * 7 // 7 days
     });
 
-    return new Response(JSON.stringify({ success: true }), {
+    // Return session data so client can save to localStorage/sessionStorage
+    return new Response(JSON.stringify({
+      success: true,
+      sessionData: sessionData
+    }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

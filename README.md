@@ -14,7 +14,7 @@ A modern, secure web portal for accessing personal media services with PocketID 
 
 ## Services Included
 
-- **Jellyfin**: Stream movies, TV shows, and music
+- **Jellyfin**: Stream movies and TV shows
 - **Immich**: Self-hosted photo and video backup
 - **Audiobookshelf**: Audiobooks and podcasts
 - **Paperless-ngx**: Document management

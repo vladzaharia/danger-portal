@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = false;
+
+// Define available services (same as services.astro)
+const services = [
+  {
+    name: 'Jellyfin',
+    description: 'Movies, TV shows and Karaoke',
+    icon: '/icons/jellyfin.svg',
+    url: 'https://media.danger.direct',
+    color: '#00a4dc'
+  },
+  {
+    name: 'Komga',
+    description: 'Comic and manga server',
+    icon: '/icons/komga.svg',
+    url: 'https://books.danger.direct',
+    color: '#4caf50'
+  },
+  {
+    name: 'Romm',
+    description: 'ROM management and game library',
+    icon: '/icons/romm.svg',
+    url: 'https://games.danger.direct',
+    color: '#9c27b0'
+  },
+  {
+    name: 'Immich',
+    description: 'Self-hosted photo and video backup',
+    icon: '/icons/immich.svg',
+    url: 'https://photos.danger.direct',
+    color: '#4250af'
+  },
+  {
+    name: 'Kiwix',
+    description: 'Offline Wikipedia and educational content',
+    icon: '/icons/kiwix.svg',
+    url: 'https://kiwix.danger.direct',
+    color: '#ff9800'
+  }
+];
+---
+
+<BaseLayout title="Services - Danger.Direct">
+  <div class="animated-bg"></div>
+  
+  <main class="container">
+    <section class="services-section">
+      <div class="services-grid">
+        {services.map(service => (
+          <a href={service.url} class="service-card glass" target="_blank" rel="noopener noreferrer">
+            <div class="service-icon" style={`background: ${service.color}20;`}>
+              <img src={service.icon} alt={service.name} />
+            </div>
+            <h3 class="service-name">{service.name}</h3>
+            <p class="service-description">{service.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .services-section {
+      margin-bottom: 3rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      padding-bottom: 1rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.2);
+    }
+
+    .service-icon {
+      width: 4rem;
+      height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+    }
+
+    .service-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .service-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-description {
+      color: var(--color-text-muted);
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+
+    @media (max-width: 768px) {
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>
+

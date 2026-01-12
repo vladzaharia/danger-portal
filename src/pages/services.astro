@@ -3,8 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 export const prerender = false;
 
-// Get session from middleware
+// Get session from middleware (may be undefined if not authenticated)
 const session = Astro.locals.session;
+
+// Check for query parameters to control visibility
+const url = Astro.url;
+const hideHeader = url.searchParams.get('hideHeader') === 'true';
+const hideCdn = url.searchParams.get('hideCdn') === 'true';
 
 // Define available services
 const services = [
@@ -48,22 +53,26 @@ const services = [
 
 <BaseLayout title="Services - Danger.Direct">
   <div class="animated-bg"></div>
-  
-  <header class="header glass">
-    <div class="header-content">
-      <div class="logo-wordmark-small">
-        <span class="wordmark-small-line-1">Danger.</span><span class="wordmark-small-line-2">Direct</span>
+
+  {!hideHeader && (
+    <header class="header glass">
+      <div class="header-content">
+        <div class="logo-wordmark-small">
+          <span class="wordmark-small-line-1">Danger.</span><span class="wordmark-small-line-2">Direct</span>
+        </div>
+        {session && (
+          <div class="user-info">
+            <a href="/api/auth/logout" class="logout-button">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16" fill="currentColor">
+                <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
+              </svg>
+              Logout
+            </a>
+          </div>
+        )}
       </div>
-      <div class="user-info">
-        <a href="/api/auth/logout" class="logout-button">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16" fill="currentColor">
-            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
-          </svg>
-          Logout
-        </a>
-      </div>
-    </div>
-  </header>
+    </header>
+  )}
 
   <main class="container">
     <section class="services-section">
@@ -80,14 +89,16 @@ const services = [
       </div>
     </section>
 
-    <section class="cdn-section">
-      <a class="service-card cdn-info glass" href="/cdn/" target="_blank" rel="noopener noreferrer">
-        <div class="cdn-header">
-          <h3>Static Files</h3>
-        </div>
-        <p>Access static files and media at <code>/cdn/</code></p>
-      </a>
-    </section>
+    {!hideCdn && (
+      <section class="cdn-section">
+        <a class="service-card cdn-info glass" href="/cdn/" target="_blank" rel="noopener noreferrer">
+          <div class="cdn-header">
+            <h3>Static Files</h3>
+          </div>
+          <p>Access static files and media at <code>/cdn/</code></p>
+        </a>
+      </section>
+    )}
   </main>
 
   <style>
@@ -303,9 +314,34 @@ const services = [
   </style>
 
   <script>
-    // Store session in localStorage for client-side access
+    // Sync session data across all storage mechanisms
     if (typeof window !== 'undefined') {
+      // Mark as authenticated in localStorage
       localStorage.setItem('authenticated', 'true');
+
+      // Try to sync session data from cookie to localStorage/sessionStorage
+      try {
+        const cookieMatch = document.cookie.split('; ').find(row => row.startsWith('danger_portal_session='));
+        if (cookieMatch) {
+          const sessionJson = decodeURIComponent(cookieMatch.split('=')[1]);
+
+          // Save to localStorage
+          try {
+            localStorage.setItem('danger_portal_session', sessionJson);
+          } catch (e) {
+            console.warn('Failed to save to localStorage:', e);
+          }
+
+          // Save to sessionStorage
+          try {
+            sessionStorage.setItem('danger_portal_session', sessionJson);
+          } catch (e) {
+            console.warn('Failed to save to sessionStorage:', e);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to sync session:', e);
+      }
     }
   </script>
 </BaseLayout>
