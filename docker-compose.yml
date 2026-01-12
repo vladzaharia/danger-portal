@@ -16,6 +16,11 @@ services:
       # Session Configuration
       - SESSION_SECRET=${SESSION_SECRET}
 
+      # Kiosk Display Configuration
+      - KIOSK_WIFI_SSID=${KIOSK_WIFI_SSID}
+      - KIOSK_WIFI_PASSWORD=${KIOSK_WIFI_PASSWORD}
+      - KIOSK_PORTAL_URL=${KIOSK_PORTAL_URL}
+
       # Node Configuration
       - NODE_ENV=production
       - HOST=0.0.0.0
