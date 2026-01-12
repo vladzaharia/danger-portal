@@ -137,6 +137,33 @@ const services = [
 ];
 ```
 
+### Kiosk Display
+
+The `/kiosk` page is designed for small displays (optimized for 800x400px) to show WiFi connection instructions. Perfect for devices like the NanoPi M6.
+
+Configure the kiosk display via environment variables:
+
+```env
+KIOSK_WIFI_SSID=Danger.Direct
+KIOSK_WIFI_PASSWORD=your_wifi_password_here
+KIOSK_PORTAL_URL=https://danger.direct
+```
+
+Features:
+- **Landscape Layout**: Optimized for 800x400px displays
+- **WiFi Instructions**: Shows SSID and password prominently
+- **QR Code**: Automatically generated QR code for easy portal access
+- **Matching Design**: Uses the same glassmorphism and gradient style as the main portal
+- **No Scrolling**: All content fits within the viewport
+
+Access the kiosk page at: `https://your-domain.com/kiosk`
+
+To display on a NanoPi M6 or similar device, configure your browser to:
+1. Open in fullscreen/kiosk mode
+2. Set the window size to 800x400
+3. Disable screen timeout/sleep
+4. Auto-start on boot
+
 ## Architecture
 
 - **Framework**: Astro 5.16.8 (Hybrid SSR/SSG)

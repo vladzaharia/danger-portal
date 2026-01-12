@@ -1,0 +1,268 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QRCode from 'qrcode';
+
+export const prerender = false;
+
+// Get configuration from environment variables with defaults
+const wifiSSID = process.env.KIOSK_WIFI_SSID || 'Danger.Direct';
+const wifiPassword = process.env.KIOSK_WIFI_PASSWORD || 'changeme';
+const portalURL = process.env.KIOSK_PORTAL_URL || 'https://danger.direct';
+
+// Generate QR code for the portal URL
+let qrCodeDataURL = '';
+try {
+  qrCodeDataURL = await QRCode.toDataURL(portalURL, {
+    width: 120,
+    margin: 1,
+    color: {
+      dark: '#b7d2ffff',
+      light: '#00000000' // Transparent background
+    }
+  });
+} catch (err) {
+  console.error('Failed to generate QR code:', err);
+}
+---
+
+<BaseLayout title="WiFi Setup - Danger.Direct">
+  <div class="animated-bg"></div>
+
+  <main class="kiosk-container">
+    <div class="kiosk-content glass">
+      <!-- Left Column: Branding & QR Code -->
+      <div class="branding-column">
+        <div class="logo-wordmark">
+          <div class="wordmark-line-1">Danger.</div>
+          <div class="wordmark-line-2">Direct</div>
+        </div>
+        {qrCodeDataURL && (
+          <div class="qr-section">
+            <img src={qrCodeDataURL} alt="QR Code for portal" class="qr-code" />
+          </div>
+        )}
+      </div>
+
+      <!-- Right Column: WiFi Instructions -->
+      <div class="instructions-column">
+        <div class="wifi-details">
+          <div class="detail-row">
+            <span class="detail-label">Network:</span>
+            <span class="detail-value">{wifiSSID}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Password:</span>
+            <span class="detail-value">{wifiPassword}</span>
+          </div>
+        </div>
+
+        <div class="portal-section">
+          <a href={portalURL} class="portal-link">{portalURL}</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    /* Kiosk-specific viewport optimization */
+    body {
+      overflow: hidden;
+      min-height: 400px;
+      max-height: 400px;
+    }
+
+    .kiosk-container {
+      width: 100vw;
+      height: 100vh;
+      max-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .kiosk-content {
+      width: auto;
+      max-width: 700px;
+      display: flex;
+      flex-direction: row;
+      gap: 2.5rem;
+      padding: 2.5rem;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Left Column: Branding */
+    .branding-column {
+      flex: 0 0 35%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding-right: 2.5rem;
+    }
+
+    .logo-wordmark {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wordmark-line-1,
+    .wordmark-line-2 {
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      display: block;
+    }
+
+    .wordmark-line-1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .wordmark-line-2 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #e91e63 0%, #f06292 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .qr-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .qr-code {
+      width: 140px;
+      height: 140px;
+      padding: 0.5rem;
+      background: #0a0a0a;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Right Column: Instructions */
+    .instructions-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .wifi-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.5rem;
+    }
+
+    .detail-label {
+      font-size: 0.95rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      min-width: 5.5rem;
+      text-align: right;
+    }
+
+    .detail-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+      flex: 1;
+    }
+
+    .portal-section {
+      margin-top: 0.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portal-link {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #e91e63 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+    }
+
+    /* Responsive fallback for testing on other screen sizes */
+    @media (max-width: 800px) or (max-height: 400px) {
+      .kiosk-content {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+      }
+
+      .branding-column {
+        flex: 0 0 auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-right: 0;
+        padding-bottom: 1rem;
+      }
+
+      .wordmark-line-1,
+      .wordmark-line-2 {
+        font-size: 1.75rem;
+      }
+
+      .qr-code {
+        width: 100px;
+        height: 100px;
+      }
+
+      .detail-value {
+        font-size: 1rem;
+      }
+
+      .portal-link {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+</BaseLayout>
+
