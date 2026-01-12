@@ -67,23 +67,22 @@ try {
     /* Kiosk-specific viewport optimization */
     body {
       overflow: hidden;
-      min-height: 400px;
-      max-height: 400px;
     }
 
     .kiosk-container {
       width: 100vw;
       height: 100vh;
-      max-height: 400px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 1.5rem;
     }
 
     .kiosk-content {
-      width: auto;
-      max-width: 700px;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
       display: flex;
       flex-direction: row;
       gap: 2.5rem;
@@ -126,24 +125,27 @@ try {
     .wordmark-line-2 {
       font-weight: 900;
       letter-spacing: -0.02em;
-      line-height: 1.1;
+      line-height: 1.2;
+      position: relative;
       display: block;
     }
 
     .wordmark-line-1 {
-      font-size: 2.5rem;
-      background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+      font-size: clamp(1.75rem, 4vw, 3.5rem);
+      background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-bottom: clamp(-0.75rem, -1.5vw, -1rem);
     }
 
     .wordmark-line-2 {
-      font-size: 2.5rem;
-      background: linear-gradient(135deg, #e91e63 0%, #f06292 100%);
+      font-size: clamp(1.75rem, 4vw, 3.5rem);
+      background: linear-gradient(135deg, #e91e63 0%, #f06292 50%, #f8bbd0 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-left: clamp(2rem, 5vw, 3.5rem);
     }
 
     .qr-section {
@@ -153,8 +155,8 @@ try {
     }
 
     .qr-code {
-      width: 140px;
-      height: 140px;
+      width: clamp(100px, 15vw, 180px);
+      height: clamp(100px, 15vw, 180px);
       padding: 0.5rem;
       background: #0a0a0a;
       border-radius: 0.5rem;
@@ -175,6 +177,8 @@ try {
       flex-direction: column;
       gap: 0.75rem;
       align-items: stretch;
+      justify-content: center;
+      flex: 1;
     }
 
     .detail-row {
@@ -206,12 +210,12 @@ try {
     }
 
     .portal-section {
-      margin-top: 0.5rem;
       padding-top: 1.5rem;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       align-items: center;
       justify-content: center;
+      flex: 1;
     }
 
     .portal-link {
