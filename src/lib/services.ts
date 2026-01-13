@@ -36,6 +36,16 @@ export const ALL_SERVICES: Service[] = [
     featured: true
   },
   {
+    name: 'PinePods',
+    description: 'Podcast server',
+    icon: '/icons/pinepods.svg',
+    url: 'https://podcasts.danger.direct',
+    color: '#4caf50',
+    categories: ['Media'],
+    groups: 'all',
+    featured: true
+  },
+  {
     name: 'Romm',
     description: 'ROM management and game library',
     icon: '/icons/romm.svg',
