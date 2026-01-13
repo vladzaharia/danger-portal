@@ -43,10 +43,10 @@ export async function buildAuthorizationUrl(
   state: string
 ): Promise<URL> {
   const config = await getOIDCConfig();
-  
+
   const parameters: Record<string, string> = {
     redirect_uri: REDIRECT_URI,
-    scope: 'openid profile email',
+    scope: 'openid profile email groups',
     code_challenge: codeChallenge,
     code_challenge_method: 'S256',
     state
@@ -130,6 +130,7 @@ export interface SessionData {
     email?: string;
     name?: string;
   };
+  groups: string[];
 }
 
 // Create session data from tokens
@@ -142,6 +143,12 @@ export async function createSessionData(
   const expiresIn = tokens.expires_in || 3600;
   const expiresAt = Date.now() + (expiresIn * 1000);
 
+  // Extract groups from ID token claims
+  // Groups can be a string array or undefined
+  const groups = Array.isArray(idTokenClaims.groups)
+    ? idTokenClaims.groups as string[]
+    : [];
+
   return {
     accessToken: tokens.access_token,
     refreshToken: tokens.refresh_token,
@@ -151,7 +158,8 @@ export async function createSessionData(
       sub: idTokenClaims.sub,
       email: idTokenClaims.email as string | undefined,
       name: idTokenClaims.name as string | undefined
-    }
+    },
+    groups
   };
 }
 

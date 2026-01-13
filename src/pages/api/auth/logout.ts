@@ -18,19 +18,20 @@ export const GET: APIRoute = async ({ cookies }) => {
 <body>
   <p>Logging out...</p>
   <script>
-    // Clear all storage mechanisms
-    try {
-      localStorage.removeItem('danger_portal_session');
-      localStorage.removeItem('authenticated');
-    } catch (e) {
-      console.warn('Failed to clear localStorage:', e);
+    // Robust removal from all storage mechanisms
+    function robustRemove(key) {
+      try { localStorage.removeItem(key); } catch (e) {}
+      try { sessionStorage.removeItem(key); } catch (e) {}
+      try { document.cookie = key + '=; path=/; max-age=0'; } catch (e) {}
     }
 
-    try {
-      sessionStorage.removeItem('danger_portal_session');
-    } catch (e) {
-      console.warn('Failed to clear sessionStorage:', e);
-    }
+    // Clear all session-related data
+    robustRemove('danger_portal_session');
+    robustRemove('authenticated');
+    robustRemove('pkce_code_verifier');
+    robustRemove('pkce_state');
+
+    console.log('All session data cleared');
 
     // Redirect to home page
     window.location.href = '/';

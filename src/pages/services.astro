@@ -1,54 +1,27 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getFeaturedServices, getServicesByCategory, type ServiceCategory } from '../lib/services';
 
 export const prerender = false;
 
-// Get session from middleware (may be undefined if not authenticated)
+// Get session from middleware - this page is now protected
 const session = Astro.locals.session;
+
+// If no session, redirect to login (this should be handled by middleware, but double-check)
+if (!session) {
+  return Astro.redirect('/');
+}
+
+// Get user groups from session
+const userGroups = session.groups || [];
+
+// Get featured services and categorized services based on user's groups
+const featuredServices = getFeaturedServices(userGroups);
+const servicesByCategory = getServicesByCategory(userGroups);
 
 // Check for query parameters to control visibility
 const url = Astro.url;
 const hideHeader = url.searchParams.get('hideHeader') === 'true';
-const hideCdn = url.searchParams.get('hideCdn') === 'true';
-
-// Define available services
-const services = [
-  {
-    name: 'Jellyfin',
-    description: 'Movies, TV shows and Karaoke',
-    icon: '/icons/jellyfin.svg',
-    url: 'https://media.danger.direct',
-    color: '#00a4dc'
-  },
-  {
-    name: 'Komga',
-    description: 'Comic and manga server',
-    icon: '/icons/komga.svg',
-    url: 'https://books.danger.direct',
-    color: '#4caf50'
-  },
-  {
-    name: 'Romm',
-    description: 'ROM management and game library',
-    icon: '/icons/romm.svg',
-    url: 'https://games.danger.direct',
-    color: '#9c27b0'
-  },
-  {
-    name: 'Immich',
-    description: 'Self-hosted photo and video backup',
-    icon: '/icons/immich.svg',
-    url: 'https://photos.danger.direct',
-    color: '#4250af'
-  },
-  {
-    name: 'Kiwix',
-    description: 'Offline Wikipedia and educational content',
-    icon: '/icons/kiwix.svg',
-    url: 'https://kiwix.danger.direct',
-    color: '#ff9800'
-  }
-];
 ---
 
 <BaseLayout title="Services - Danger.Direct">
@@ -75,35 +48,50 @@ const services = [
   )}
 
   <main class="container">
-    <section class="services-section">
-      <div class="services-grid">
-        {services.map(service => (
-          <a href={service.url} class="service-card glass" target="_blank" rel="noopener noreferrer">
-            <div class="service-card-content">
-              <div class="service-icon" style={`background: ${service.color}20;`}>
-                <img src={service.icon} alt={service.name} />
+    {/* Featured Services Section */}
+    {featuredServices.length > 0 && (
+      <section class="services-section">
+        <div class="services-grid">
+          {featuredServices.map(service => (
+            <a href={service.url} class="service-card glass" target="_blank" rel="noopener noreferrer">
+              <div class="service-card-content">
+                <div class="service-icon" style={`background: ${service.color}20;`}>
+                  <img src={service.icon} alt={service.name} />
+                </div>
+                <div class="service-info">
+                  <h3 class="service-name">{service.name}</h3>
+                  <p class="service-description">{service.description}</p>
+                </div>
               </div>
-              <div class="service-info">
-                <h3 class="service-name">{service.name}</h3>
-                <p class="service-description">{service.description}</p>
-              </div>
-            </div>
-            <div class="service-url">{service.url}</div>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    {!hideCdn && (
-      <section class="cdn-section">
-        <a class="service-card cdn-info glass" href="/cdn/" target="_blank" rel="noopener noreferrer">
-          <div class="cdn-header">
-            <h3>Static Files</h3>
-          </div>
-          <p>Access static files and media at <code>/cdn/</code></p>
-        </a>
+              <div class="service-url">{service.url}</div>
+            </a>
+          ))}
+        </div>
       </section>
     )}
+
+    {/* Categorized Services Sections */}
+    {Array.from(servicesByCategory.entries()).map(([category, services]) => (
+      <section class="services-section">
+        <h2 class="category-title">{category}</h2>
+        <div class="services-grid">
+          {services.map(service => (
+            <a href={service.url} class="service-card glass" target="_blank" rel="noopener noreferrer">
+              <div class="service-card-content">
+                <div class="service-icon" style={`background: ${service.color}20;`}>
+                  <img src={service.icon} alt={service.name} />
+                </div>
+                <div class="service-info">
+                  <h3 class="service-name">{service.name}</h3>
+                  <p class="service-description">{service.description}</p>
+                </div>
+              </div>
+              <div class="service-url">{service.url}</div>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
   </main>
 
   <style>
@@ -186,6 +174,15 @@ const services = [
 
     .services-section {
       margin-bottom: 3rem;
+    }
+
+    .category-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid rgba(59, 130, 246, 0.3);
     }
 
     .section-title {
@@ -272,6 +269,11 @@ const services = [
       font-weight: 500;
       padding-left: 4.5rem;
       word-break: break-all;
+      transition: color 0.2s ease;
+    }
+
+    .service-card:hover .service-url {
+      color: #ffffff;
     }
 
     .service-link {
@@ -280,6 +282,11 @@ const services = [
       gap: 0.5rem;
       color: #3b82f6;
       font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .service-card:hover .service-link {
+      color: #ffffff;
     }
 
     .service-link svg {

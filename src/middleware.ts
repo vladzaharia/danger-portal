@@ -2,8 +2,9 @@ import { defineMiddleware } from 'astro:middleware';
 import { SESSION_COOKIE_NAME, type SessionData } from './lib/auth';
 
 // Protected routes that require authentication
-// Note: /services is now public to allow embedding
-const PROTECTED_ROUTES: string[] = [];
+// /services is protected to enforce group-based access control
+// /embed remains public for embedding
+const PROTECTED_ROUTES: string[] = ['/services'];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, cookies, redirect } = context;

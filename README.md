@@ -5,21 +5,40 @@ A modern, secure web portal for accessing personal media services with PocketID 
 ## Features
 
 - 🔐 **Secure Authentication**: PocketID integration with PKCE flow
+- 👥 **Group-Based Access Control**: OIDC groups for fine-grained service access
 - 🎨 **Modern UI**: Animated gradient backgrounds with glassmorphism effects
 - 📱 **Responsive Design**: Works seamlessly on desktop and mobile
 - 🚀 **Fast Performance**: Built with Astro for optimal loading speeds
 - 🎯 **Service Hub**: Centralized access to all your media services
+- 📂 **Categorized Services**: Organized by Media, Productivity, Infrastructure, and Disasters / Emergencies
+- 🌟 **Featured Services**: Priority display for frequently used applications
 - 📁 **Static CDN**: Serve static files from mounted volumes
 - 🐳 **Docker Ready**: Easy deployment with Docker Compose
 
 ## Services Included
 
-- **Jellyfin**: Stream movies and TV shows
-- **Immich**: Self-hosted photo and video backup
-- **Audiobookshelf**: Audiobooks and podcasts
-- **Paperless-ngx**: Document management
-- **Nextcloud**: File sync and collaboration
-- **Calibre-Web**: E-book library management
+### Featured Services (Available to All Users)
+- **Jellyfin**: Movies, TV shows and Karaoke
+- **Komga**: Comic and manga server
+- **Romm**: ROM management and game library
+- **PocketID**: Identity and access management
+
+### Media Services
+- **Immich**: Self-hosted photo and video backup (requires `immich` group)
+
+### Productivity Services
+- **Seafile**: File sync and collaboration platform (requires `productivity` group)
+- **Code Server**: VS Code in the browser (requires `productivity` group)
+- **Pairdrop**: Local file sharing and transfer (requires `disaster_prep` group)
+
+### Infrastructure Services
+- **Coolify**: Self-hosted deployment platform (requires `infrastructure` group)
+- **Static Assets**: Static files and media CDN (requires `infrastructure` group)
+
+### Disaster Preparedness Services
+- **Kiwix**: Offline Wikipedia and educational content (requires `disaster_prep` group)
+- **Traccar**: GPS tracking and location services (requires `disaster_prep` group)
+- **Pairdrop**: Local file sharing and transfer (requires `disaster_prep` group)
 
 ## Prerequisites
 
@@ -115,6 +134,20 @@ A modern, secure web portal for accessing personal media services with PocketID 
 1. Register your application at `https://id.danger.direct`
 2. Set the redirect URI to `https://your-domain.com/api/auth/callback`
 3. Copy the Client ID and Client Secret to your `.env` file
+4. **Enable Groups Scope**: Ensure your PocketID client is configured to:
+   - Include the `groups` scope in OIDC requests
+   - Return groups in the ID token as an array claim named `groups`
+
+### Group-Based Access Control
+
+The portal uses OIDC groups to control access to services. Users must be assigned to appropriate groups in PocketID:
+
+- **`immich`**: Access to Immich photo backup service
+- **`disaster_prep`**: Access to disaster preparedness tools (Kiwix, Traccar, Pairdrop)
+- **`productivity`**: Access to productivity applications (Seafile, Code Server, Pairdrop)
+- **`infrastructure`**: Access to infrastructure management tools (Static Assets)
+
+**Note**: Users can be in multiple groups and will see all services they have access to. Services marked as "available to all" are accessible to any authenticated user regardless of group membership.
 
 ### Static CDN Files
 
@@ -122,20 +155,30 @@ Place static files in the `public/cdn/` directory or mount a volume to `/app/dis
 
 Files will be accessible at `https://your-domain.com/cdn/`
 
-### Service URLs
+### Service Configuration
 
-Update the service URLs in `src/pages/services.astro` to match your infrastructure:
+Services are defined in `src/lib/services.ts`. Update the service URLs, groups, and categories to match your infrastructure:
 
 ```typescript
-const services = [
+export const ALL_SERVICES: Service[] = [
   {
     name: 'Jellyfin',
-    url: 'https://jellyfin.your-domain.com',
-    // ...
+    description: 'Movies, TV shows and Karaoke',
+    icon: '/icons/jellyfin.svg',
+    url: 'https://media.danger.direct', // Update this URL
+    color: '#00a4dc',
+    categories: ['Media'],
+    groups: 'all', // 'all' or array of group names
+    featured: true
   },
-  // ...
+  // ... more services
 ];
 ```
+
+Each service can be configured with:
+- **categories**: One or more categories (Media, Productivity, Infrastructure, Disasters / Emergencies)
+- **groups**: Either `'all'` for public access or an array of required group names
+- **featured**: Whether to display in the featured section at the top
 
 ### Kiosk Display
 
