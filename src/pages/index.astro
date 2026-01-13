@@ -57,10 +57,16 @@ const error = Astro.url.searchParams.get('error');
 
         <div class="cta-container">
           <div class="button-wrapper">
-            <a href="/api/auth/login" class="create-account-button">
-              <img src="/icons/pocket-id.svg" alt="PocketID" class="button-icon-img">
-              <span class="button-text">Create your Account</span>
-            </a>
+            <div class="dual-button">
+              <a href="https://id.danger.direct/signup" class="dual-button-left">
+                <img src="/icons/pocket-id.svg" alt="PocketID" class="button-icon-img">
+                <span class="button-text">Create an Account</span>
+              </a>
+              <span class="dual-button-divider">or</span>
+              <a href="/api/auth/login" class="dual-button-right">
+                <span class="button-text">Login</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -199,25 +205,58 @@ const error = Astro.url.searchParams.get('error');
       }
     }
 
-    .create-account-button {
+    .dual-button {
+      display: flex;
+      align-items: stretch;
+      background: #000000;
+      border-radius: 0.375rem;
+      overflow: hidden;
+    }
+
+    .dual-button-left,
+    .dual-button-right {
       display: inline-flex;
       align-items: center;
       gap: 0.75rem;
-      padding: 1rem 1.5rem 1rem 1rem;
+      padding: 1rem 1.5rem;
       font-size: 1.125rem;
       font-weight: 600;
-      color: white;
       text-decoration: none;
-      background: #000000;
-      color: #ffffff !important;
-      border-radius: 0.375rem;
-      border-bottom: 0 !important;
       transition: all 0.2s ease;
       cursor: pointer;
       position: relative;
+      min-height: 4rem;
     }
 
-    .create-account-button .button-text {
+    .dual-button-left {
+      padding-right: 1rem;
+    }
+
+    .dual-button-right {
+      padding-left: 1rem;
+    }
+
+    .dual-button-divider {
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.4);
+      position: relative;
+    }
+
+    .dual-button-left:hover,
+    .dual-button-right:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .dual-button-left:active,
+    .dual-button-right:active {
+      transform: scale(0.98);
+    }
+
+    .button-text {
       background: linear-gradient(90deg, #3b82f6, #e91e63, #3b82f6);
       background-size: 200% 100%;
       -webkit-background-clip: text;
@@ -229,19 +268,11 @@ const error = Astro.url.searchParams.get('error');
       animation: gradientSlide 2s linear infinite;
     }
 
-    .create-account-button:active {
-      transform: scale(0.98);
-    }
-
     .button-icon-img {
       width: 2rem;
       height: 2rem;
       display: inline-block;
       transition: filter 0.3s ease;
-    }
-
-    .create-account-button:hover .button-icon-img {
-      filter: brightness(1) invert(0);
     }
 
     .info-section {
@@ -266,7 +297,6 @@ const error = Astro.url.searchParams.get('error');
     .info-section a {
       color: #3b82f6;
       text-decoration: none;
-      border-bottom: 1px solid #3b82f6;
       transition: all 0.2s;
     }
 
@@ -359,9 +389,21 @@ const error = Astro.url.searchParams.get('error');
         padding: 1.25rem;
       }
 
-      .create-account-button {
-        font-size: 1.125rem;
-        padding: 1rem 2rem;
+      .dual-button {
+        flex-direction: column;
+      }
+
+      .dual-button-left,
+      .dual-button-right {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem 1.5rem;
+      }
+
+      .dual-button-divider {
+        width: 100%;
+        padding: 0.5rem 0;
+        justify-content: center;
       }
     }
   </style>
