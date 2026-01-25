@@ -3,9 +3,11 @@
 
 import type { SessionData } from './lib/auth';
 
-declare namespace App {
-  interface Locals {
-    session?: SessionData;
+declare global {
+  namespace App {
+    interface Locals {
+      session?: SessionData;
+    }
   }
 }
 

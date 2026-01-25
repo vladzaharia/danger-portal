@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { readdir, stat, readFile } from 'fs/promises';
-import { join, extname, basename } from 'path';
+import { join, basename } from 'path';
 import { lookup } from 'mime-types';
 
 export const prerender = false;

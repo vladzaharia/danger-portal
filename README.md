@@ -67,6 +67,7 @@ A modern, secure web portal for accessing personal media services with PocketID 
    Edit `.env` and set your values:
    ```env
    POCKETID_ISSUER=https://id.danger.direct
+   POCKETID_ISSUER_INTERNAL=https://id.danger.direct  # Same as external for local dev
    CLIENT_ID=danger-portal
    CLIENT_SECRET=your_client_secret_here
    REDIRECT_URI=http://localhost:3000/api/auth/callback
@@ -93,6 +94,7 @@ A modern, secure web portal for accessing personal media services with PocketID 
    Update with production values:
    ```env
    POCKETID_ISSUER=https://id.danger.direct
+   POCKETID_ISSUER_INTERNAL=http://pocket-id:8080  # Internal container URL
    CLIENT_ID=danger-portal
    CLIENT_SECRET=your_production_secret
    REDIRECT_URI=https://danger.direct/api/auth/callback
@@ -137,6 +139,21 @@ A modern, secure web portal for accessing personal media services with PocketID 
 4. **Enable Groups Scope**: Ensure your PocketID client is configured to:
    - Include the `groups` scope in OIDC requests
    - Return groups in the ID token as an array claim named `groups`
+
+### OAuth URL Configuration
+
+The portal supports separate internal and external OAuth URLs for optimal performance in containerized environments:
+
+- **`POCKETID_ISSUER`** (External URL): Used for frontend redirects and authorization URLs. This should be the publicly accessible URL (e.g., `https://id.danger.direct`).
+
+- **`POCKETID_ISSUER_INTERNAL`** (Internal URL): Used for server-side OAuth operations like token exchange and userinfo requests. In Docker deployments, this should be the container-to-container URL (e.g., `http://pocket-id:8080`) for faster communication. If not set, it falls back to `POCKETID_ISSUER`.
+
+**Example configurations:**
+
+- **Local Development**: Both URLs should be the same (e.g., `https://id.danger.direct`)
+- **Docker Deployment**:
+  - `POCKETID_ISSUER=https://id.danger.direct` (external)
+  - `POCKETID_ISSUER_INTERNAL=http://pocket-id:8080` (internal container URL)
 
 ### Group-Based Access Control
 
