@@ -1,7 +1,14 @@
 import * as client from 'openid-client';
 
 // PocketID configuration
-const POCKETID_ISSUER = process.env.POCKETID_ISSUER || 'https://id.danger.direct';
+// Internal URL: Used for server-side OAuth operations (token exchange, userinfo, etc.)
+// This should be the container-to-container URL when running in Docker
+const POCKETID_ISSUER_INTERNAL = process.env.POCKETID_ISSUER_INTERNAL || process.env.POCKETID_ISSUER || 'https://id.danger.direct';
+
+// External URL: Used for frontend redirects and authorization URLs
+// This should be the publicly accessible URL
+const POCKETID_ISSUER_EXTERNAL = process.env.POCKETID_ISSUER || 'https://id.danger.direct';
+
 const CLIENT_ID = process.env.CLIENT_ID || 'danger-portal';
 const CLIENT_SECRET = process.env.CLIENT_SECRET || '';
 const REDIRECT_URI = process.env.REDIRECT_URI || 'https://danger.direct/api/auth/callback';
@@ -9,13 +16,16 @@ const REDIRECT_URI = process.env.REDIRECT_URI || 'https://danger.direct/api/auth
 // Session cookie name
 export const SESSION_COOKIE_NAME = 'danger_portal_session';
 
-// Initialize OIDC configuration
+// Export external issuer for use in frontend
+export const EXTERNAL_ISSUER = POCKETID_ISSUER_EXTERNAL;
+
+// Initialize OIDC configuration (uses internal URL for server-side operations)
 let configPromise: Promise<client.Configuration> | null = null;
 
 export async function getOIDCConfig(): Promise<client.Configuration> {
   if (!configPromise) {
     configPromise = client.discovery(
-      new URL(POCKETID_ISSUER),
+      new URL(POCKETID_ISSUER_INTERNAL),
       CLIENT_ID,
       CLIENT_SECRET
     );
@@ -37,12 +47,17 @@ export function generateState(): string {
   return client.randomState();
 }
 
-// Build authorization URL
+// Build authorization URL (uses external URL for frontend redirects)
 export async function buildAuthorizationUrl(
   codeChallenge: string,
   state: string
 ): Promise<URL> {
-  const config = await getOIDCConfig();
+  // Use external issuer for authorization URL that users will be redirected to
+  const externalConfig = await client.discovery(
+    new URL(POCKETID_ISSUER_EXTERNAL),
+    CLIENT_ID,
+    CLIENT_SECRET
+  );
 
   const parameters: Record<string, string> = {
     redirect_uri: REDIRECT_URI,
@@ -52,7 +67,7 @@ export async function buildAuthorizationUrl(
     state
   };
 
-  return client.buildAuthorizationUrl(config, parameters);
+  return client.buildAuthorizationUrl(externalConfig, parameters);
 }
 
 // Exchange authorization code for tokens

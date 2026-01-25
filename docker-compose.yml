@@ -8,7 +8,10 @@ services:
     restart: unless-stopped
     environment:
       # PocketID OIDC Configuration
+      # External URL for frontend redirects
       - POCKETID_ISSUER=${POCKETID_ISSUER:-https://id.danger.direct}
+      # Internal URL for server-side OAuth operations (container-to-container)
+      - POCKETID_ISSUER_INTERNAL=${POCKETID_ISSUER_INTERNAL:-http://pocket-id:8080}
       - CLIENT_ID=${CLIENT_ID:-danger-portal}
       - CLIENT_SECRET=${CLIENT_SECRET}
       - REDIRECT_URI=${REDIRECT_URI:-https://danger.direct/api/auth/callback}
